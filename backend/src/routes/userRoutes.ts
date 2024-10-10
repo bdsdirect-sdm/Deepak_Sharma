@@ -1,10 +1,15 @@
 import {Router} from "express"
 
-import {createPostValidator} from "../validators/signupValidation"
-import { userSignup } from "../controllers/userController"
+import {createPostValidator} from "../validators/createUserValidation"
+import { getAllAgencies, userLogin, userSignup } from "../controllers/userController"
+import imagaeuploader from "../middlewares/multer.middlerware"
 
 const userRoute  = Router()
 
-userRoute.get('/signup', userSignup)
+userRoute.post('/signup',imagaeuploader.single('resume'),createPostValidator, userSignup)
+userRoute.get("/login",userLogin)
+userRoute.get("/getAgency", getAllAgencies)
+userRoute.put("/updatePassword", )
+
 
 export default userRoute;

@@ -13,9 +13,8 @@ const storage = multer.diskStorage({
         cb(null, dir);
     },
     filename: (req, file, cb) => {
-        const filenaam = uuidv4() + "." + file.originalname;
-        console.log(filenaam,"File Name>>.")
-        cb(null, filenaam );
+        const file_Name = uuidv4() + "." + file.originalname;
+        cb(null, file_Name );
     }
 })
 
@@ -23,47 +22,19 @@ const storage = multer.diskStorage({
 const imagaeuploader = multer({
     storage:storage,
     fileFilter:(req, file, cb) =>{
-        // console.log(req,"reqLLLLLLLLLLLLLLLLL");
         console.log(req.file,"body")
-        if(!file){
-            return cb(new Error("file is missing"))
-        }
-        if(file.fieldname == "profile_image"){
-            if(file.mimetype === "image/jpeg" || file.mimetype === "image/png"  ||  file.mimetype === "image/jpg"){
+        if(file.fieldname == "resume"){
+            if(file.mimetype === "application/pdf" || file.mimetype === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"){
                 cb(null , true);
             }
             else{
-                cb(new Error("only png jpeg  jpg file is allowed"))
-            }
-        }
-        else if(file.fieldname == "appointment_letter"){
-            if(file.mimetype === "application/pdf"){
-                cb(null , true);
-            }
-            else{
-                cb(new Error("only pdf file is allowed"));
+                cb(new Error("only pdf and docs file is allowed"));
             }
         }
         else{
-            cb(new Error("file should be in not found"))
+            cb(null, true)
         }
     }
 })
-
-
-// export const errorHandler = (err:any, req:Request, res:Response, next:NextFunction)=>{
-//     if(err instanceof multer.MulterError){
-//         res.status(400).json({message:err.message});
-//         return;
-//     }
-//     else if(err){
-//         console.log(err,"::::::::::::::::::::::::::::::::::::::::::::,err")
-//         res.status(400).json({message:err.message})
-//         return;
-//     }
-//     else{
-//         next();
-//     }
-// }
 
 export default  imagaeuploader;

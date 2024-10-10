@@ -14,3 +14,11 @@ export const mailer = nodemailer.createTransport({
     }
 })
 
+export  const sendMail = (to:string, subject:string, html:any) => {
+    mailer.sendMail({
+        from: process.env.NODE_EMAIL,
+        to: to,
+        subject: subject,
+        html:html
+    })
+}
