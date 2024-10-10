@@ -1,12 +1,16 @@
 import nodemailer from "nodemailer"
 
+import {config} from "dotenv"
+
+config();
+
 export const mailer = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
-    secure: false, // or 'STARTTLS'
+    secure: false,
     auth: {
-        user: "ds9999106554@gmail.com",
-        pass: "ebtjkdmpdbsaoiof "
+        user: process.env.NODE_EMAIL,
+        pass: process.env.EMAIL_KEY
     }
 })
 
