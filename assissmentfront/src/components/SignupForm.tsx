@@ -114,23 +114,6 @@ const SignupOrEditForm: React.FC<any> = ({mode}) => {
 
             <InputFeild fieldName='email'  label='Email' placeHolder='Enter your Email' />
 
-            <div className='input_main_div flex-col flex mx-6'>
-                  <label htmlFor='profile_image' className="input_label">Profile Image</label>
-                  <input
-                      id='profile_image'
-                      name='profile_image'
-                      type="file"
-                      className="input_field bg-slate-200 px-2 py-1 rounded-lg"
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                          const file = event.target.files?.[0] || null;
-                          setFieldValue('profile_image', file);
-                      }}
-                  />
-                  <ErrorMessage name='profile_image' component="div" className='field_error' />
-
-            </div>
-
-
             <InputFeild fieldName='companyAddress'  label='Company Address' placeHolder='Enter Your Companty Address' />
 
             <InputFeild fieldName='companyCity'  label='Company City' placeHolder='Enter your company city' />
@@ -147,23 +130,20 @@ const SignupOrEditForm: React.FC<any> = ({mode}) => {
 
             <InputFeild fieldName='homeZip'  label='Home Zip' placeHolder='Enter your home Zip' />
 
-              <div className='input_main_div flex-col flex mx-6'>
-                  <label htmlFor='appointment_letter' className="input_label">Appointment Letter</label>
+            <div className='input_main_div flex-col flex mx-6'>
+                  <label htmlFor='profile_image' className="input_label">Profile Image</label>
                   <input
-                      id='appointment_letter'
-                      name='appointment_letter'
+                      id='profile_image'
+                      name='profile_image'
                       type="file"
                       className="input_field bg-slate-200 px-2 py-1 rounded-lg"
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          const file = e.target.files?.[0];
-                          setFieldValue('appointment_letter', file);
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          const file = event.target.files?.[0] || null;
+                          setFieldValue('profile_image', file);
                       }}
                   />
-                  <ErrorMessage name='appointment_letter' component="div" className='field_error' />
-
-              </div>
-
-              
+                  <ErrorMessage name='profile_image' component="div" className='field_error' />
+            </div>
             <button type='submit' className='w-[70%] bg-gray-800 text-white font-semibold text-2xl my-1 rounded-xl  py-1 hover:scale-90 transition-all duration-100'
                 >
                   Signup

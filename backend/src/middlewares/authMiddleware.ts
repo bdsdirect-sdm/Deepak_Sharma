@@ -1,6 +1,6 @@
-import jwt, { JwtPayload } from "jsonwebtoken"
-// import { checkToken } from "../server/utils/checkToken";
-import { checkToken } from "../utils/checkToken";
+import jwt from "jsonwebtoken"
+import { NextFunction, Response } from "express"
+import UserDetail from "../models/userDetail";
 import dotenv from "dotenv"
 
 dotenv.config();
@@ -8,10 +8,6 @@ interface userdata {
     userId: string;
     email: string;
 }
-
-import { NextFunction, Response } from "express"
-import UserDetail from "../models/userDetail";
-
 interface Request{
     headers?:any;
     user? :any;
@@ -20,17 +16,14 @@ interface Request{
 
 }
 export const auth = async(req : Request , res : Response, next : NextFunction) =>{
-    // console.log(req.headers.authorization,"dfjidfjifn")
     let token = req.headers.authorization?.split(" ")[1];
 
     if(!token){
         res.status(401).json({ message: "No token provided." });   
-        return;
-         
+        return;  
     }
    try{
         const decoded = await jwt.verify(token, process.env.SECREAT_KEY as string);
-
         const user = await UserDetail.findByPk((decoded as userdata).userId);
         (req as any).user = user;
         next();

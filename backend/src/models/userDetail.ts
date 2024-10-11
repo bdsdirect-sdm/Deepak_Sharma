@@ -1,14 +1,21 @@
 import { DataTypes, Model } from "sequelize";
 
 import sequelize from "../config/dbconnect";
-import  AddressDetail  from "./addressModel";
+import Hobbies from "./hobbiesModel";
+
 
 class UserDetail extends Model {
-    public firstName! : string;
-    public lastName! : string;
-    public email! : string;
-    public profile_image! :  string;
-    public appoinment_letter! :   string;
+    public id!  : number;
+    public firstName!:string;
+    public lastName!:string;
+    public email!:string;
+    public phoneNo!:string;
+    public password!:string;
+    public gender!:"male" |"female"|"other";
+    public user_type!:"Agency" | "Job_Seeker";
+    public agency?:string;
+    public resume? : string;
+    public isActive!:boolean;
 }
 
 UserDetail.init(
@@ -32,13 +39,34 @@ UserDetail.init(
             allowNull:false,
             unique:true
         },
-        profile_image:{
+        password:{
+            type:DataTypes.STRING,
+            allowNull:false
+        },
+        phoneNo:{
+            type:DataTypes.STRING,
+            allowNull:false
+        },
+        gender:{
+            type:DataTypes.ENUM,
+            values:["male","female","other"],
+            allowNull:false
+        },
+        user_type:{
+            type:DataTypes.ENUM,
+            values:["Agency","Job_Seeker"],
+            allowNull:false
+        },
+        agency:{
+            type:DataTypes.STRING,
+        },
+        resume:{
             type:DataTypes.STRING,
             allowNull:true
         },
-        appointment_letter:{
-            type:DataTypes.STRING,
-            allowNull:true
+        isActive:{
+            type:DataTypes.BOOLEAN,
+            defaultValue:false
         }
     },
     {
@@ -47,12 +75,12 @@ UserDetail.init(
     }
 )
 
-UserDetail.hasOne(AddressDetail,{
+UserDetail.hasMany(Hobbies,{
     sourceKey:"id",
     foreignKey:"userId",
     as:"address"
 })
-AddressDetail.belongsTo(UserDetail,{
+Hobbies.belongsTo(UserDetail,{
     targetKey:"id",
     foreignKey:"userId",
     as:"user"
