@@ -16,6 +16,7 @@ interface payloadInterface{
     phoneNo:string,
     gender:string,
     user_type:string,
+    profile_image:string,
     agency?:string,
     resume?:string,
     isActive:boolean
@@ -25,45 +26,48 @@ interface payloadInterface{
 export const userSignup = async(req:any, res:Response) => {
     try{
 
-        const {firstName, lastName,email,phoneNo, gender, user_type,hobbies,isActive = false} = req.body;  
+        const {firstName, lastName,email,phoneNo, gender, user_type,hobbies,isActive = true} = req.body;  
+        // console.log("hobbieshobbieshobbies",hobbies)
+        console.log("deeapks chsekc", firstName,user_type);
+        const hobbiArray = hobbies.split(",");
+
+        console.log(firstName, lastName, email, "sdjfudfhuidfh")
         
         const password = generateRandomCode(8);
         console.log("passwordpassword",password)
 
         const  hashedPassword = await passwordToHassed(password);
 
+        const {profile_image}  = req.files;
 
-        let payload : payloadInterface  = {firstName,lastName,email,phoneNo,gender,user_type,password : hashedPassword,isActive};
+
+        let payload : payloadInterface  = {firstName,lastName,email,phoneNo,gender,user_type,password : hashedPassword,isActive ,profile_image:profile_image?.[0].path};
 
         if(user_type === "Job_Seeker"){
             const {agency} =  req.body;
             payload.agency = agency;
-            const {resume} = req?.files;
-            const resumePath = resume.path;
+            const {resume } = req?.files;
+            const resumePath = resume?.[0].path;
             payload.resume = resumePath 
         }
 
-        // const existUser = await UserDetail.findOne({where:{email:email}});
+        const existUser = await UserDetail.findOne({where:{email:email}});
 
-        // if(existUser){  
-        //     res.status(409).json({
-        //         message:"User Already exist",
-        //         success:false
-        //     })
-        //     return;
-        // }
+        if(existUser){  
+            res.status(409).json({
+                message:"User Already exist",
+                success:false
+            })
+            return;
+        }
         
         const  userDetail : any = await UserDetail.create(payload as any);
-        console.log("cretateuser")
 
-        const insertAllHobbies:any = hobbies?.map((hobbi : string) =>Hobbies.create({
+        const insertAllHobbies:any = hobbiArray?.map((hobbi : string) =>Hobbies.create({
             hobbi,
             userId:userDetail?.id
         }))
         const hobbiDetail:any =await Promise.all(insertAllHobbies);
-
-
-
 
         if(!userDetail  ||  !hobbiDetail){
             res.status(500).json({
@@ -73,7 +77,7 @@ export const userSignup = async(req:any, res:Response) => {
         }
 
 
-        await sendMail(email,"Welcome Message",welcomeEmail(user_type,firstName+" "+lastName))
+        await sendMail(email,"Welcome Message",welcomeEmail(user_type,password,firstName+" "+lastName))
 
 
         res.status(200).json({
@@ -160,6 +164,7 @@ export const getAllAgencies = async (req:any, res:Response) => {
 export const userLogin = async(req : Request,res : Response) =>{
     try{
         const {email  , password } = req.body;
+        console.log(email,password,"loginninni")
         if(!email || !password){
             res.status(404).json({
                 message:"Details is incomplete",
@@ -172,6 +177,8 @@ export const userLogin = async(req : Request,res : Response) =>{
             email:email,
         }})
 
+        console.log("after check data fetch")
+
         if(!user){
             res.status(404).json({
                 message:"User is not exsist please Register",
@@ -180,17 +187,16 @@ export const userLogin = async(req : Request,res : Response) =>{
             return;
         }
 
-        if(!await bcrypt.compare(password,user.password)){
+        if(!await bcrypt.compare(password,user?.password)){
             res.status(409).json({
                 success:false,
-                message:"user login successfullly"
+                message:"password is incorrect"
             })
+            return;
         }
     
         const payload = {
-            userId:user.id,
-            email,
-            isActive:user.isActive
+            user
         }
 
         const token = await jwt.sign(payload, process.env.SECREAT_KEY as string, {
@@ -217,13 +223,24 @@ export const userLogin = async(req : Request,res : Response) =>{
 
 export const updatePassword = async (req:any, res:Response) => {
     try{
-        const {email, password} = req.user;
+        const {email} = req.user;
+        const {password} = req.body;
 
-        const hashedPassword = passwordToHassed(password);
+        const hashedPassword  = await passwordToHassed(password);
 
-        const result = await UserDetail.update({password:hashedPassword, isActive:true},{
+        console.log("hashedPasswordhashedPassword",hashedPassword)
+        
+        
+
+        const result:any = await UserDetail.findOne({
             where:{email:email}
         })
+
+        result.password = hashedPassword;
+        result.isActive = true;
+        await result?.save();
+
+        console.log("updated data",result)
 
         res.status(200).json({
             success:true,
@@ -236,10 +253,49 @@ export const updatePassword = async (req:any, res:Response) => {
             success:false,
 
         })
+        console.log(error)
     }
 }
 
+export const getMyAgency = async (req:any, res:Response) => {
+    try{
+        const agencyName = req?.user?.agency;
+        const agency = await  UserDetail.findOne({
+            where:{
+                firstName:agencyName
+            }
+        })
+        res.status(200).json({
+            success:true,
+            agency:agency
+        })
+    } catch(error){
+        res.status(500).json({
+            success:false,
+            message:error
+        })
+    }
+}
 
+export const getAllSeekers = async (req:any, res:Response) => {
+    try{
+        const agencyName = req?.user?.firstName;
+        const sekeers = await  UserDetail.findAll({
+            where:{
+                agency:agencyName
+            }
+        })
+        res.status(200).json({
+            success:true,
+            sekeers:sekeers
+        })
+    } catch(error){
+        res.status(500).json({
+            success:false,
+            message:error
+        })
+    }
+}
 // export const updateProfile  = async(req:any, res:Response) => {
 //     try{
 //         const id = req.params?.id;

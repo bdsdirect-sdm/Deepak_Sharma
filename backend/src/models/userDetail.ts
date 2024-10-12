@@ -6,11 +6,12 @@ import Hobbies from "./hobbiesModel";
 
 class UserDetail extends Model {
     public id!  : number;
-    public firstName!:string;
+    public firstName?:string;
     public lastName!:string;
     public email!:string;
     public phoneNo!:string;
     public password!:string;
+    public profile_image! : string;
     public gender!:"male" |"female"|"other";
     public user_type!:"Agency" | "Job_Seeker";
     public agency?:string;
@@ -63,6 +64,10 @@ UserDetail.init(
         resume:{
             type:DataTypes.STRING,
             allowNull:true
+        },
+        profile_image:{
+            type:DataTypes.STRING,
+            allowNull:false
         },
         isActive:{
             type:DataTypes.BOOLEAN,

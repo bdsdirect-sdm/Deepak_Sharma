@@ -9,7 +9,9 @@ import exp = require("constants")
 const app = express()
 
 config();
-app.use(cors())
+app.use(cors({
+    origin:"*"
+}))
 app.use(express.json());
 app.use('/upload', express.static(path.join(__dirname,'../upload')));
 app.use("/api/v1",routes);

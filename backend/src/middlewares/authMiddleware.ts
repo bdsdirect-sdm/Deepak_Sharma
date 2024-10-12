@@ -17,6 +17,7 @@ interface Request{
 }
 export const auth = async(req : Request , res : Response, next : NextFunction) =>{
     let token = req.headers.authorization?.split(" ")[1];
+    console.log(token);
 
     if(!token){
         res.status(401).json({ message: "No token provided." });   
@@ -24,7 +25,13 @@ export const auth = async(req : Request , res : Response, next : NextFunction) =
     }
    try{
         const decoded = await jwt.verify(token, process.env.SECREAT_KEY as string);
-        const user = await UserDetail.findByPk((decoded as userdata).userId);
+        console.log("decodeddecoded",decoded)
+        const user = await UserDetail.findOne({
+            where:{
+                email:(decoded as any).user.email
+            }
+        });
+        console.log("useruseruser",user);
         (req as any).user = user;
         next();
    }

@@ -6,6 +6,9 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { QueryClientProvider, QueryClient  } from '@tanstack/react-query';
+
+const queryClient = new  QueryClient();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,8 +16,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <Router>
       <React.StrictMode>
-        <App />
-        <ToastContainer/>
+        <QueryClientProvider client={queryClient}>
+          <App />
+          <ToastContainer/>
+        </QueryClientProvider>
+
       </React.StrictMode>
   </Router>
 

@@ -9,7 +9,7 @@ const sequelize = new Sequelize(process.env.DB_NAME as string, process.env.DB_HO
 } )
 
 export const dbconnect = () =>{
-    sequelize.sync({force:true}).then(()=>{
+    sequelize.sync({alter:true}).then(()=>{
         console.log("database connected and syncronized successfully")
     }).catch((err) =>{
         console.log(err);

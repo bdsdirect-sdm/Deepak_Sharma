@@ -1,16 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import {check} from "express-validator"
+import {check,} from "express-validator"
 import {validateUser} from "../middlewares/feildValidator"
 export  const createPostValidator = [
     check("firstName")
         .not()
         .isEmpty()
         .withMessage("First Name is required"),
-
-    check("lastName")
-        .not()
-        .isEmpty()
-        .withMessage("Last Name is required"),
 
     check("email")
         .not()
@@ -34,16 +29,11 @@ export  const createPostValidator = [
         .withMessage("User Type is required")
         .isIn(["Agency", "Job_Seeker"])
         .withMessage("Role should be selected"),
-
-    check("hobbies")
-        .optional()
-        .isArray()
-        .withMessage("hobbies must be in array"),
-
     check("agency")
         .optional()
-        .isEmpty()
-        .withMessage("select your agency"),
+        .isString()
+        .withMessage("agenct should be string"),
+        
 
     (req:Request, res:Response, next:NextFunction) =>{
         validateUser(req, res, next);

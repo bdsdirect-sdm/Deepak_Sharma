@@ -23,12 +23,20 @@ const imagaeuploader = multer({
     storage:storage,
     fileFilter:(req, file, cb) =>{
         console.log(req.file,"body")
-        if(file.fieldname == "resume"){
+        if(file.fieldname == "profile_image"){
+            if(file.mimetype === "image/jpeg" || file.mimetype === "image/png"){
+                cb(null , true);
+            }
+            else{
+                cb(new Error("Only png and jpeg files are allowed"))
+            }
+        }
+        else if(file.fieldname == "resume"){
             if(file.mimetype === "application/pdf" || file.mimetype === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"){
                 cb(null , true);
             }
             else{
-                cb(new Error("only pdf and docs file is allowed"));
+                cb(new Error("only pdf and docs files are allowed"));
             }
         }
         else{

@@ -1,4 +1,4 @@
-export  const welcomeEmail = (user_type:string, name:string) => {
+export  const welcomeEmail = (user_type:string,password:string, name:string) => {
     return `<!DOCTYPE html>
     <html>
     
@@ -72,8 +72,6 @@ export  const welcomeEmail = (user_type:string, name:string) => {
                 <p>Dear ${name},</p>
                 <p>You have successfully registered in this application as a Role of <span class="highlight">"${user_type}"</span>. We
                     are excited to have you as a participant!</p>
-                <p>Please log in to your learning dashboard to access the course materials and start your learning journey.
-                </p>
             </div>
         </div>
     </body>
