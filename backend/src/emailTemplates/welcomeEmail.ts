@@ -51,6 +51,11 @@ export  const welcomeEmail = (user_type:string,password:string, name:string) => 
                 font-weight: bold;
                 margin-top: 20px;
             }
+
+            .password {
+                font_size : 20px;
+                font-weight : bold;
+            }
     
             .support {
                 font-size: 14px;
@@ -72,6 +77,7 @@ export  const welcomeEmail = (user_type:string,password:string, name:string) => 
                 <p>Dear ${name},</p>
                 <p>You have successfully registered in this application as a Role of <span class="highlight">"${user_type}"</span>. We
                     are excited to have you as a participant!</p>
+                <p>Your Temporary Password is <span id = "password">${password}</span></p>
             </div>
         </div>
     </body>

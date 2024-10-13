@@ -22,7 +22,6 @@ const storage = multer.diskStorage({
 const imagaeuploader = multer({
     storage:storage,
     fileFilter:(req, file, cb) =>{
-        console.log(req.file,"body")
         if(file.fieldname == "profile_image"){
             if(file.mimetype === "image/jpeg" || file.mimetype === "image/png"){
                 cb(null , true);
