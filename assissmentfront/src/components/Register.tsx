@@ -1,222 +1,194 @@
-// src/components/SignupOrEditForm.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-// import { useLocation } from 'react-router-dom';
-import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import InputFeild from './InputFeild';
-import { useQuery,useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { createValidationSchema } from '../utilities/validators';
+import { useResisterContext } from '../services/operations/userAPI';
 
 
+// set Form Initail Data
 const initialFromData = {
   firstName: '',
   lastName: '',
   email: "",
-  profile_image:  null,
+  profile_image: null,
   phoneNo: '',
   gender: "male",
   hobbies: [],
-  user_type:"Job_Seeker",
-  agency:"",
+  user_type: "Job_Seeker",
+  agency: "",
   resume: null
-}
+};
 
+const Register: React.FC = () => {
+  const [agencyData, setAgency] = useState([]);
 
-// Validation Schema Function
-const createValidationSchema = () =>
-  Yup.object().shape({
-    firstName: Yup.string().required("Please enter your first name"),
-    // lastName: Yup.string().nullable().optional().required("Please enter your last name"),
-    email: Yup.string().email("Please enter the correct email").required("Please enter your email"),
-    profile_image: Yup.mixed().required("Please enter your profile photo"),
-    phoneNo: Yup.string().required(";please Enter Your Mobile No.").matches(/^[1-9][0-9]{9}/, "Must be integer and 10 in length"),
-    user_type: Yup.string().required("Please enter your role"),
-    // agency: Yup.string().nullable().optional().required("agency is required"),
-    // resume: Yup.mixed().required("Please enter your appointment letter"),
+  const navigate = useNavigate();
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:4400/api/v1/getAllAgency");
+      setAgency(response.data.data);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const {  isLoading } = useQuery({
+    queryKey: ["getAgencies"],
+    queryFn: fetchData,
+    staleTime:1000*60
   });
+  const {mutate} = useResisterContext(navigate);
 
-const Register: React.FC = () => {   
-  const [agencyData, setAgency] = useState([])
-
-  const navigate =  useNavigate();
-  const fetchData = async () =>{
-    try{
-        const response : any = await axios.get("http://localhost:4400/api/v1/getAllAgency")
-        console.log(response,"responseseseseswe")
-        setAgency(response.data.data);
-        return response;
-    } catch(error){
-        console.log(error)
-    }
-  }
-  const {data,isLoading} = useQuery({
-    queryKey:["getAgencies"],
-    queryFn: fetchData
-  })
-
-  const  mutation = useMutation({
-    mutationKey: ["mutation"],
-    mutationFn: async (data:any) => {
-        return await axios.post("http://localhost:4400/api/v1/signup",data)
-    },
-    onSuccess:()=>{
-      toast.success("successfully user added")
-      navigate(`/login`)
-    }
-})
-
-
-  if(isLoading){
-    return(<div>Loading...</div>)
+  if (isLoading) {
+    return (<div className="flex justify-center items-center h-screen">Loading...</div>);
   }
 
   return (
-    <div className=" bg-slate-300 font-serif w-full pb-2">
-      <div className=' bg-gray-800 h-9'></div>
-      <div className=' text-gray-800 font-semibold text-5xl '>Register Form</div>
-      <Formik
-        initialValues={initialFromData}
-        validationSchema={createValidationSchema()}
-        
-        onSubmit={async(values) => {
-          try{
-              console.log("vauaevauae")
-              const formData:any = new FormData();
+    <div className=" bg-gradient-to-r from-slate-100 to-slate-400 bg-gray-100 min-h-screen py-6 flex flex-col justify-center sm:py-12">
+      <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-xl transform skew-y-3 sm:skew-y-0 sm:-rotate-6 rounded-3xl"></div>
+        <div className="relative px-4 py-10 bg-gradient-to-r from-slate-100 to-slate-400 shadow-lg sm:rounded-3xl sm:p-20">
+          <div className="max-w-md mx-auto">
+            <div className="text-center text-3xl font-bold text-gray-900 mb-5">Register Form</div>
 
-              Object.keys(values).forEach((key) =>{
-                formData.append(key, (values as any)[key]);
-              })
+            <Formik
+              initialValues={initialFromData}
+              validationSchema={createValidationSchema}
+              onSubmit={async (values) => {
+                try {
+                  const formData: any = new FormData();
+                  Object.keys(values).forEach((key) => formData.append(key, (values as any)[key]));
 
-              for(let [key,value] of formData){
-                console.log(key,value)
-              }
+                  // for (let [key, value] of formData) {
+                  //   console.log(key, value);
+                  // }
 
-              const {data}:any = mutation.mutate(formData)
-              
-          }catch(error){
-            toast.error("Unble to upload data");
-          }
-        }}
-      >
-        {({values, isSubmitting , isValid, validateForm,setFieldValue, setValues}) => (
-          <Form className='bg-gray-400 w-[65%] mx-auto rounded-xl py-3 my-3'>
-            <InputFeild fieldName='firstName'  label='First Name' placeHolder='Enter your First Name' />
-            {
-              values.user_type === 'Job_Seeker'  && (<InputFeild fieldName='lastName'  label='Last Name' placeHolder='Enter your Last Name' />
-              )
-            }
+                   await mutate(formData);
+                } catch (error) {
+                  toast.error("Unable to upload data");
+                }
+              }}
+            >
+              {({ values, isSubmitting, isValid, setFieldValue, setValues }) => (
+                <Form className="space-y-6">
+                  <InputFeild fieldName="firstName" label="First Name" placeHolder="Enter your First Name" />
+                  {values.user_type === 'Job_Seeker' && <InputFeild fieldName="lastName" label="Last Name" placeHolder="Enter your Last Name" />}
 
+                  <InputFeild fieldName="email" label="Email" placeHolder="Enter your Email" />
+                  <InputFeild fieldName="phoneNo" label="Phone Number" placeHolder="Enter Your Phone No" />
 
-            <InputFeild fieldName='email'  label='Email' placeHolder='Enter your Email' />
+                  <div className="flex items-center space-x-4">
+                    <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
+                    <div className="flex items-center">
+                      <label htmlFor="male" className="mr-2">Male</label>
+                      <Field type="radio" id="male" name="gender" value="male" className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" />
+                    </div>
+                    <div className="flex items-center">
+                      <label htmlFor="female" className="mr-2">Female</label>
+                      <Field type="radio" id="female" name="gender" value="female" className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" />
+                    </div>
+                    <div className="flex items-center">
+                      <label htmlFor="other" className="mr-2">Other</label>
+                      <Field type="radio" id="other" name="gender" value="other" className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" />
+                    </div>
+                  </div>
 
-            <InputFeild fieldName='phoneNo'  label='Phone Number' placeHolder='Enter Your Phone No' />
+                  <div id="checkbox-group" className="block text-sm font-medium text-gray-700">Hobbies</div>
+                  <div role="group" aria-labelledby="checkbox-group" className="space-y-2">
+                    {['Singing', 'Traviling', 'Reading', 'Playing'].map((hobby) => (
+                      <div key={hobby} className="flex items-center">
+                        <Field type="checkbox" id={hobby} name="hobbies" value={hobby} className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            const checked = e.target.checked;
+                            const currentHobbies = values.hobbies;
+                            if (checked) {
+                              setFieldValue("hobbies", [...currentHobbies, hobby])
+                            }
+                            else {
+                              setFieldValue("hobbies", (currentHobbies.filter((hobbies: string) => hobbies !== hobby)))
+                            }
 
-            <label htmlFor='gender'>
-              Gender
-              <label htmlFor='male'>Male
-                <input type="radio" id="male" name="gender" value="male" />
-              </label>
-              <label htmlFor='female'>Female
-                <input type="radio" id="female" name="gender" value="female" />
-              </label>
-              <label htmlFor='other'>other
-                <input type='radio'  id='other' name='gender' value='other'/>
-              </label>
-            </label>
+                          }}
+                        />
+                        <label htmlFor={hobby} className="ml-2 text-sm text-gray-700">{hobby}</label>
+                      </div>
+                    ))}
+                    <ErrorMessage  name="hobbies" component="span" className="ml-2 text-sm text-red-600" />
+                  </div>
 
-            <div id="checkbox-group">Hobbies</div>
-          <div role="group" aria-labelledby="checkbox-group">
-            <label>
-              <Field type="checkbox" name="hobbies" value="Singing" />
-              Singing
-            </label>
-            <label>
-              <Field type="checkbox" name="hobbies" value="Traviling" />
-              Traviling
-            </label>
-            <label>
-              <Field type="checkbox" name="hobbies" value="Reading" />
-              Reading
-            </label>
-            <label>
-              <Field type="checkbox" name="hobbies" value="Playing" />
-              Playing
-            </label>
-          </div>
+                  <div>
+                    <label htmlFor="user_type" className="block text-sm font-medium text-gray-700">User Type</label>
+                    <Field as="select" name="user_type" className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                      <option value="Job_Seeker">Job Seeker</option>
+                      <option value="Agency">Agency</option>
+                    </Field>
+                  </div>
 
-            <div>
-            <label htmlFor="userType">User Type</label>
-             <  Field as="select" name="user_type">
-                  <option value="Job_Seeker">Job Seeker</option>
-                  <option value="Agency">Agency</option>
-                </Field>
-              </div>
-
-            <div className='input_main_div flex-col flex mx-2'>
-                  <label htmlFor='profile_image' className="input_label">Profile Image</label>
-                  <input
-                      id='profile_image'
-                      name='profile_image'
-                      type="file"
-                      className="input_field bg-slate-200 px-1 py-1 rounded-lg"
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                          const file = event.target.files?.[0] || null;
-                          setFieldValue('profile_image', file);
-                      }}
-                  />
-                  <ErrorMessage name='profile_image' component="div" className='field_error' />
-            </div>
-            {
-              values.user_type === 'Job_Seeker'  && (<>
-
-                
-
-                <div className='input_main_div flex-col flex mx-2'>
-                    <label htmlFor='resume' className="input_label">Resume</label>
+                  <div className="flex flex-col space-y-3">
+                    <label htmlFor="profile_image" className="block text-sm font-medium text-gray-700">Profile Image</label>
                     <input
-                        id='resume'
-                        name='resume'
-                        type="file"
-                        className="input_field bg-slate-200 px-1 py-1 rounded-lg"
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      id="profile_image"
+                      name="profile_image"
+                      type="file"
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300"
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        const file = event.target.files?.[0] || null;
+                        setFieldValue('profile_image', file);
+                      }}
+                    />
+                    <ErrorMessage name="profile_image" component="div" className="text-red-500 text-sm" />
+                  </div>
+
+                  {values.user_type === 'Job_Seeker' && (
+                    <>
+                      <div className="flex flex-col space-y-3">
+                        <label htmlFor="resume" className="block text-sm font-medium text-gray-700">Resume</label>
+                        <input
+                          id="resume"
+                          name="resume"
+                          type="file"
+                          placeholder='jpeg and png  only'
+                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300"
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             const file = event.target.files?.[0] || null;
                             setFieldValue('resume', file);
-                        }}
-                    />
-                    <ErrorMessage name='resume' component="div" className='field_error' />
-                </div>
-                    <div>
-                      <Field as="select" name="agency">
-                        {
-                          agencyData?.map((agency:any) =>{
-                            return(<option  value={agency.firstName}>{agency.firstName}</option>)
-                          })
-                        }
-                      </Field>
-                    </div>
-              </>)
-            }
-            
-            <button type='submit' className='w-[70%] bg-gray-800 text-white font-semibold text-2xl my-1 rounded-xl  py-1 hover:scale-90 transition-all duration-100'
-                >
-                  Signup
-            </button>
-            <button type='button' className='w-[40%] bg-gray-800 text-white font-semibold text-2xl my-1 rounded-xl  py-1 hover:scale-90 transition-all duration-100'
-                onClick={() =>{
-                        console.log(values  )
-                        // setValues(initialFromData);
-                        toast.success("Cancel Form");
-                      }
-                    }
-                    >
-                     Cancel 
-               </button>
-          </Form>
-        )}
-      </Formik>
+                          }}
+                        />
+                        <ErrorMessage name="resume" component="div" className="text-red-500 text-sm" />
+                      </div>
+
+                      <div>
+                        <label htmlFor="agency" className="block text-sm font-medium text-gray-700">Agency</label>
+                        <Field as="select" name="agency" className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                          <option value="">Select Agency</option>
+                          {agencyData?.map((agency: any) => (
+                            <option key={agency.firstName} value={agency.firstName}>{agency.firstName}</option>
+                          ))}
+                        </Field>
+                        <ErrorMessage  name="agency" component="div" className="text-red-500 text-sm" />
+
+                      </div>
+                    </>
+                  )}
+
+                  <div className="flex space-x-4">
+                    <button type="submit"  className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-500 transition-colors">Signup</button>
+                    <button type="button" className="w-full bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-500 transition-colors"
+                      onClick={() => {setValues(initialFromData)}}>Reset</button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

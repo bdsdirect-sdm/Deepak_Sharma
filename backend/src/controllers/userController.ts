@@ -27,14 +27,11 @@ export const userSignup = async(req:any, res:Response) => {
     try{
 
         const {firstName, lastName,email,phoneNo, gender, user_type,hobbies,isActive = true} = req.body;  
-        // console.log("hobbieshobbieshobbies",hobbies)
-        console.log("deeapks chsekc", firstName,user_type);
-        const hobbiArray = hobbies.split(",");
 
-        console.log(firstName, lastName, email, "sdjfudfhuidfh")
+        const hobbiArray = (hobbies).split(",");
+
         
         const password = generateRandomCode(8);
-        console.log("passwordpassword",password)
 
         const  hashedPassword = await passwordToHassed(password);
 
@@ -164,7 +161,6 @@ export const getAllAgencies = async (req:any, res:Response) => {
 export const userLogin = async(req : Request,res : Response) =>{
     try{
         const {email  , password } = req.body;
-        console.log(email,password,"loginninni")
         if(!email || !password){
             res.status(404).json({
                 message:"Details is incomplete",
@@ -177,7 +173,6 @@ export const userLogin = async(req : Request,res : Response) =>{
             email:email,
         }})
 
-        console.log("after check data fetch")
 
         if(!user){
             res.status(404).json({
@@ -227,11 +222,7 @@ export const updatePassword = async (req:any, res:Response) => {
         const {password} = req.body;
 
         const hashedPassword  = await passwordToHassed(password);
-
-        console.log("hashedPasswordhashedPassword",hashedPassword)
         
-        
-
         const result:any = await UserDetail.findOne({
             where:{email:email}
         })
@@ -239,8 +230,6 @@ export const updatePassword = async (req:any, res:Response) => {
         result.password = hashedPassword;
         result.isActive = true;
         await result?.save();
-
-        console.log("updated data",result)
 
         res.status(200).json({
             success:true,

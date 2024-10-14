@@ -2,15 +2,18 @@ import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const AgencyDeshboard = () => {
+    const {token} = useSelector((state:any) => state.user);
+    // console.log(token,"token comming from redux")
     const  navigate = useNavigate()
     const {data, isLoading} = useQuery({
         queryKey: ['agency'],
         queryFn: async () => {
             const response = await axios.get(`http://localhost:4400/api/v1/getAllSeekers`,{
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token")} `
+                    'Authorization': `Bearer ${token} `
                 }
             })
             return response.data;

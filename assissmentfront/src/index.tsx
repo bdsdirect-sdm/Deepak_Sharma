@@ -6,22 +6,31 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { QueryClientProvider, QueryClient  } from '@tanstack/react-query';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { configureStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
+import rootReducer from './reducer';
 
-const queryClient = new  QueryClient();
+const queryClient = new QueryClient();
+
+const store = configureStore({
+  reducer: rootReducer
+})
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <Router>
-      <React.StrictMode>
+    <React.StrictMode>
+      <Provider store={store}>
         <QueryClientProvider client={queryClient}>
           <App />
-          <ToastContainer/>
+          <ToastContainer />
         </QueryClientProvider>
+      </Provider>
 
-      </React.StrictMode>
+    </React.StrictMode>
   </Router>
 
 );

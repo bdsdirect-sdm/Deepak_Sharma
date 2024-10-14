@@ -8,8 +8,15 @@ import Profile from './components/Profile';
 import Login from './components/Login';
 import AgencyDeshboard from './components/AgencyDeshboard';
 import SeekerDashBoard from './components/SeekerDashBoard';
+import Error from './components/Error';
+import { useSelector } from 'react-redux';
 
 const App : React.FC = () => {
+
+  const {user_type} = useSelector((state:any) => state.user)
+  console.log(user_type,"userType from redux")
+
+  // const user_type : string | null = localStorage.getItem("user_type")
   return (
     <div className="App">
       <Routes>
@@ -18,9 +25,13 @@ const App : React.FC = () => {
         <Route path='/login' element ={<Login/>}/>
         <Route path="/update/:id"  element = {< UpdateForm/>}/>
         <Route path = "/profile/:id" element = {<Profile/>}/>
-        <Route path = "/dashboard" element = {
-          localStorage.getItem("user_type") === "Job_Seeker" ?(<SeekerDashBoard/>): (<AgencyDeshboard/>)
-        }/>
+        {
+          user_type === "Job_Seeker" && (<Route path = "/dashboard" element={<SeekerDashBoard/>}/>) 
+        }
+        {
+          user_type === "Agency"  && (<Route path = "/dashboard" element={<AgencyDeshboard/>}/>)
+        }
+        <Route path='*' element={<Error/>}/>
         
       </Routes>
     </div>

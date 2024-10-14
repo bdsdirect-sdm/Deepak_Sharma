@@ -2,20 +2,31 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
     
     const SeekerDashBoard = () => {
         const navigate = useNavigate()
+        const {token} = useSelector((state: any) =>state.user)
         const {data, isLoading, isError,error} = useQuery({
             queryKey: ['seekerDashBoard'],
             queryFn: async () => {
                 const response = await axios.get(`http://localhost:4400/api/v1/getMyAgency`,{
                     headers:{
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${token}`
                     }
                 })
                 return response.data;
             }
         })
+        console.log(data,"datadatadata")
+
+        if(isLoading){
+            return (
+                <div className="text-rose-950 text-xl mt-10">
+                    <h1>Loading...</h1>
+                </div>
+            );
+        }
         
         if (isError || !data) {
             return (
@@ -32,19 +43,19 @@ import { useNavigate } from 'react-router-dom'
 	            <section className="bg-white shadow-md rounded-lg mb-12 p-6 flex items-center justify-between">
 	                <div>
 	                    <span className="text-xl font-bold">Your Agency Dashboard</span><br />
-	                    {data.firstName && (
+	                    {data.agency.firstName && (
 	                        <>
-	                            Your Agency Name : {data.firstName}<br/>
-	                            Email : {data.email} <br/> 
-	                            Phone : {data.phone}
+	                            {/* Your Agency Name : {data.agency}<br/> */}
+	                            Email : {data.agency.email} <br/> 
+	                            Phone : {data.agency.phoneNo}
 	                        </>
                         )}
                     </div>
 
 		            {/* Profile Image Section */}
 		            {
-		                data.profile_image &&
-		                (<img src={`http://localhost:4400/${data.profile_image}`} alt='Profile' width={150} height={150} className='rounded-full object-cover w-auto mx-auto'/>)
+		                data.agency.profile_image &&
+		                (<img src={`http://localhost:4400/${data.agency.profile_image}`} alt='Profile'  className='rounded-full object-cover w-[30%] mx-auto'/>)
 		            }
 
 		        </section>
