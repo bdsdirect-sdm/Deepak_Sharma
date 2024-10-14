@@ -1,12 +1,15 @@
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
-import { setUserType,setToken } from "../../Slices/userSlice"
+import { setUserType,setToken ,setStayLogin} from "../../Slices/userSlice"
+import { toast } from "react-toastify"
+import { logout } from "../../Slices/userSlice"
+
 
 // const BASE_URL  = process.env.BASE_REACT_APP_URL;
 
 
 
-export const useLoginContext = (dispatch:any,navigate:any) =>{
+export const useLoginContext = (dispatch:any,navigate:any,stay:any) =>{
 
     return(
          useMutation({
@@ -14,8 +17,7 @@ export const useLoginContext = (dispatch:any,navigate:any) =>{
                 return await axios.post("http://localhost:4400/api/v1/login",data)
             },
             onSuccess : (data) =>{
-                localStorage.setItem("token",JSON.stringify(data.data.token))
-                localStorage.setItem("user_type",JSON.stringify(data?.data?.user?.user_type))
+                dispatch(setStayLogin(stay))
                 dispatch(setToken(data.data.token))
                 dispatch(setUserType(data.data.user.user_type))
                 navigate("/dashboard")
@@ -25,7 +27,6 @@ export const useLoginContext = (dispatch:any,navigate:any) =>{
 }
 
 export const useResisterContext = (navigate:any) => {
-    // console.log(BASE_URL, "urllllllll")
     return (
         useMutation({
             mutationFn: async (data) => {
@@ -38,4 +39,19 @@ export const useResisterContext = (navigate:any) => {
         })
         
     )
+}
+
+export const useLogout  = (dispatch : any,navigate : any) =>{
+    return( ()=>{
+        try{
+            localStorage.clear();
+            dispatch(logout())  
+            toast.success("logout")
+            navigate("/login")
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+)
 }

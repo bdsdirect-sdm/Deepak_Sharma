@@ -69,6 +69,7 @@ const Register: React.FC = () => {
                   // for (let [key, value] of formData) {
                   //   console.log(key, value);
                   // }
+                  
 
                    await mutate(formData);
                 } catch (error) {

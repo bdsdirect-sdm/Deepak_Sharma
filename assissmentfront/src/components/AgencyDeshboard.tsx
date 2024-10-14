@@ -3,8 +3,11 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useLogout } from '../services/operations/userAPI'
 
 const AgencyDeshboard = () => {
+    const dispatch = useDispatch()
     const {token} = useSelector((state:any) => state.user);
     // console.log(token,"token comming from redux")
     const  navigate = useNavigate()
@@ -19,6 +22,8 @@ const AgencyDeshboard = () => {
             return response.data;
         }
     })
+
+    const logout = useLogout(dispatch,navigate)
 
     if(isLoading){
         return  <div>Loading...</div>
@@ -43,10 +48,7 @@ const AgencyDeshboard = () => {
                 ))}
 
                     <button type='button'
-                        onClick={() => {
-                            localStorage.clear();
-                            navigate("/login")}
-                        }
+                        onClick={() =>logout()}
                             
                         className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mt-6'>
 		                Logout

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { Routes , Route} from 'react-router-dom';
+import { Routes , Route, Navigate} from 'react-router-dom';
 import Register from './components/Register';
 
 import UpdateForm from './components/UpdateForm';
@@ -10,6 +10,7 @@ import AgencyDeshboard from './components/AgencyDeshboard';
 import SeekerDashBoard from './components/SeekerDashBoard';
 import Error from './components/Error';
 import { useSelector } from 'react-redux';
+import OpenRoute from './components/routeComponent/OpenRoute';
 
 const App : React.FC = () => {
 
@@ -22,16 +23,21 @@ const App : React.FC = () => {
       <Routes>
         {/* <Route path='/' element = {<Home/>}/> */}
         <Route path = "/" element = {<Register/>}/>
-        <Route path='/login' element ={<Login/>}/>
-        <Route path="/update/:id"  element = {< UpdateForm/>}/>
-        <Route path = "/profile/:id" element = {<Profile/>}/>
+        <Route path='/login' element ={
+          <OpenRoute>
+            <Login/>
+          </OpenRoute>
+        }/>
+        {/* <Route path="/update/:id"  element = {< UpdateForm/>}/>
+        <Route path = "/profile/:id" element = {<Profile/>}/> */}
+        
         {
           user_type === "Job_Seeker" && (<Route path = "/dashboard" element={<SeekerDashBoard/>}/>) 
         }
         {
           user_type === "Agency"  && (<Route path = "/dashboard" element={<AgencyDeshboard/>}/>)
         }
-        <Route path='*' element={<Error/>}/>
+        <Route path='*' element={<Navigate to={"/login"}/>}/>
         
       </Routes>
     </div>
