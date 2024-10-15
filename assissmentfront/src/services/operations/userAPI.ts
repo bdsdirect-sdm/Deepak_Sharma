@@ -1,8 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { setUserType,setToken } from "../../Slices/userSlice"
-
-// const BASE_URL  = process.env.BASE_REACT_APP_URL;
+import { toast } from "react-toastify"
 
 
 
@@ -25,7 +24,6 @@ export const useLoginContext = (dispatch:any,navigate:any) =>{
 }
 
 export const useResisterContext = (navigate:any) => {
-    // console.log(BASE_URL, "urllllllll")
     return (
         useMutation({
             mutationFn: async (data) => {
