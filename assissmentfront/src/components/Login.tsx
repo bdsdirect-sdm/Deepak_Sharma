@@ -5,14 +5,16 @@ import { useNavigate } from 'react-router-dom';
 import { createLoginSchema } from '../utilities/validators';
 import { useDispatch } from 'react-redux';
 import { useLoginContext } from '../services/operations/userAPI';
+import { useState } from 'react';
 
 
 
 const Login = () => {
+  const [stay, setStay] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { mutate, isPending, isError, error } = useLoginContext(dispatch,navigate)
+  const { mutate, isPending, isError, error } = useLoginContext(dispatch,navigate,stay)
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -58,6 +60,19 @@ const Login = () => {
 
               {isPending && <p className="text-blue-600 mb-3">Loading...</p>}
               {isError && <p className="text-red-600 mb-3">Error: {error?.message}</p>}
+
+             <div>
+                <label htmlFor='stay_login'>Stay Sign in</label>
+                <input name="stay_login" type='checkbox' onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
+                  const checked = e.target.checked;
+                  if(checked){
+                    setStay(true)
+                  }
+                  else{
+                    setStay(false);
+                  }
+                }}/>
+             </div>
 
               <button
                 type="submit"

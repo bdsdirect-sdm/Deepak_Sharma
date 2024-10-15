@@ -2,9 +2,12 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useLogout } from '../services/operations/userAPI'
+import { UseDispatch } from 'react-redux'
     
     const SeekerDashBoard = () => {
+        const dispatch  = useDispatch()
         const navigate = useNavigate()
         const {token} = useSelector((state: any) =>state.user)
         const {data, isLoading, isError,error} = useQuery({
@@ -18,7 +21,7 @@ import { useSelector } from 'react-redux'
                 return response.data;
             }
         })
-        console.log(data,"datadatadata")
+        const logout = useLogout(dispatch,navigate)
 
         if(isLoading){
             return (
@@ -45,7 +48,7 @@ import { useSelector } from 'react-redux'
 	                    <span className="text-xl font-bold">Your Agency Dashboard</span><br />
 	                    {data.agency.firstName && (
 	                        <>
-	                            {/* Your Agency Name : {data.agency}<br/> */}
+	                            Agency : {data.agency.firstName}<br/>
 	                            Email : {data.agency.email} <br/> 
 	                            Phone : {data.agency.phoneNo}
 	                        </>
@@ -64,7 +67,7 @@ import { useSelector } from 'react-redux'
 		        {/* Action Button Section */}
 
 		        <button type='button'
-		            onClick={() => navigate("/login")}
+		            onClick={() => logout()}
 		            className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mt-6'>
 		            logout
 		        </button>
