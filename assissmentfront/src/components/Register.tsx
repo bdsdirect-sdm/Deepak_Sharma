@@ -27,11 +27,13 @@ const initialFromData = {
 const Register: React.FC = () => {
   const [agencyData, setAgency] = useState([]);
 
+  console.log("REACT_APP_BASE_URL", process.env.REACT_APP_BASE_URL)
+
   const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:4400/api/v1/getAllAgency");
+      const response = await axios.get(process.env.REACT_APP_BASE_URL +"/getAllAgency");
       setAgency(response.data.data);
       return response;
     } catch (error) {
@@ -69,7 +71,7 @@ const Register: React.FC = () => {
                   // for (let [key, value] of formData) {
                   //   console.log(key, value);
                   // }
-                  
+
 
                    await mutate(formData);
                 } catch (error) {
