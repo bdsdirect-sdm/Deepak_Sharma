@@ -28,8 +28,7 @@ const App : React.FC = () => {
             <Login/>
           </OpenRoute>
         }/>
-        {/* <Route path="/update/:id"  element = {< UpdateForm/>}/>
-        <Route path = "/profile/:id" element = {<Profile/>}/> */}
+
         
         {
           user_type === "Job_Seeker" && (<Route path = "/dashboard" element={<SeekerDashBoard/>}/>) 
