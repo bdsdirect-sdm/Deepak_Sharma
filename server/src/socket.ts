@@ -1,27 +1,33 @@
 import socketio from "socket.io"
+interface SentMessage{
+    message: string;
+    room: string;
+}
 export const setSocket = (server:any) =>{
     const io = new socketio.Server(server,{
+        // serveClient:true,   //it is by default true to serve the erver. You can set it to false if dont want to sever serv the server
         cors: {origin:"*"}
     });
 
     io.on("connect",(socket:any) =>{
 
         console.log("Client connected",socket.id)
-    
-        // first ard or emit is the name event
-        socket.emit("welcome",[1,2,3])
-        socket.on("select-car", (data : any)=>{
-            console.log("message from select-car",data)
-            socket.emit("test",`You have selected ${data}`)
-        })
-        socket.on("join_room",(data : any)=>{
-            console.log(data)
-            socket.join(data)
-            console.log("room has been joined", data)
 
-            socket.to(data).emit("")
+        socket.on("join_room",(room:string)=>{
+            socket.join(room)
+            console.log("joined room",socket.id)
+            io.to(room).emit("message",`A new user is just joined ${socket.id} in room ${room}`)
         })
-        
+        socket.on("send_message",({message,room}:SentMessage) =>{
+            console.log(`${socket.id} just sent a message in a room ${room}`)
+            io.to(room).emit("message",{message,sender:socket.id})
+        })
+        socket.on("leave_room",(room:string)=>{
+            socket.leave(room)
+        })
+        socket.on("disconnect", () => {
+            console.log("Client disconnected",socket.id)
+        })
         
     })
 }
