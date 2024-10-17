@@ -1,7 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 
 import sequelize from "../config/dbconnect";
-import Hobbies from "./hobbiesModel";
 
 
 class UserDetail extends Model {
@@ -17,6 +16,8 @@ class UserDetail extends Model {
     public agency?:string;
     public resume? : string;
     public isActive!:boolean;
+    public status?:"approved"|"pending"|"declined";
+    public hobbies!:string;
 }
 
 UserDetail.init(
@@ -72,6 +73,15 @@ UserDetail.init(
         isActive:{
             type:DataTypes.BOOLEAN,
             defaultValue:false
+        },
+        status:{
+            type:DataTypes.ENUM,
+            values:["approved","pending","declined"],
+            allowNull:true
+        },
+        hobbies:{
+            type:DataTypes.STRING,
+            allowNull:false
         }
     },
     {
@@ -80,15 +90,15 @@ UserDetail.init(
     }
 )
 
-UserDetail.hasMany(Hobbies,{
-    sourceKey:"id",
-    foreignKey:"userId",
-    as:"address"
-})
-Hobbies.belongsTo(UserDetail,{
-    targetKey:"id",
-    foreignKey:"userId",
-    as:"user"
-})
+// UserDetail.hasMany(Hobbies,{
+//     sourceKey:"id",
+//     foreignKey:"userId",
+//     as:"address"
+// })
+// Hobbies.belongsTo(UserDetail,{
+//     targetKey:"id",
+//     foreignKey:"userId",
+//     as:"user"
+// })
 
 export default UserDetail;

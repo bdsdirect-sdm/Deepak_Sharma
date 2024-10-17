@@ -1,16 +1,14 @@
 import React from 'react';
 import './App.css';
 import { Routes , Route, Navigate} from 'react-router-dom';
-import Register from './components/Register';
-
-import UpdateForm from './components/UpdateForm';
-import Profile from './components/Profile';
-import Login from './components/Login';
-import AgencyDeshboard from './components/AgencyDeshboard';
-import SeekerDashBoard from './components/SeekerDashBoard';
-import Error from './components/Error';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import AgencyDeshboard from './pages/AgencyDeshboard';
+import SeekerDashBoard from './pages/SeekerDashBoard';
+import Error from './pages/Error';
 import { useSelector } from 'react-redux';
 import OpenRoute from './components/routeComponent/OpenRoute';
+import ChatBox from './pages/ChatBox';
 
 const App : React.FC = () => {
 
@@ -36,6 +34,7 @@ const App : React.FC = () => {
         {
           user_type === "Agency"  && (<Route path = "/dashboard" element={<AgencyDeshboard/>}/>)
         }
+        <Route path='/chatbox/:roomid' element = {<ChatBox/>}/>
         <Route path='*' element={<Navigate to={"/login"}/>}/>
         
       </Routes>

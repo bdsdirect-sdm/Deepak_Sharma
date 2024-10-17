@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-import InputFeild from './InputFeild';
+import InputFeild from '../components/common/InputFeild';
 import { useQuery } from '@tanstack/react-query';
 import { createValidationSchema } from '../utilities/validators';
 import { useResisterContext } from '../services/operations/userAPI';
@@ -33,7 +33,7 @@ const Register: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(process.env.REACT_APP_BASE_URL +"/getAllAgency");
+      const response = await axios.get( "http://localhost:4400/api/v1/getAllAgency");
       setAgency(response.data.data);
       return response;
     } catch (error) {
@@ -185,6 +185,10 @@ const Register: React.FC = () => {
                     <button type="submit"  className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-500 transition-colors">Signup</button>
                     <button type="button" className="w-full bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-500 transition-colors"
                       onClick={() => {setValues(initialFromData)}}>Reset</button>
+                  </div>
+                  <div>
+                  <button type="button" className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-500 transition-colors"
+                      onClick={() => {navigate("/login")}}>Login</button>
                   </div>
                 </Form>
               )}

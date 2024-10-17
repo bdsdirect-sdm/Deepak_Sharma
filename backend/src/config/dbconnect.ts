@@ -13,7 +13,7 @@ export const dbconnect = () =>{
         console.log("database connected and syncronized successfully")
     }).catch((err) =>{
         console.log(err);
-        console.log("Problem in creating user")
+        console.log("problem in connecting database")
     })
 }
 
