@@ -1,49 +1,66 @@
-import React, { useEffect , useState} from 'react'
-import { newSocket } from '../utils/setSocketServer'
-// import { Socket } from 'socket.io-client'
+import  { useEffect , useState} from 'react'
+import socket from '../utils/setSocketServer'
 
-
+interface Sent_Message{
+    message: string,
+    sender: string
+}
 
 const ChatApp = () => {
-  const [formData, setFormData] = useState({
-    yourName: '',
-    roomid:''
-  })
-  
-  useEffect(()=>{
-    newSocket.on("connect",()=>{
-      console.log("websocket is connected ")
-    })
-    newSocket.on("message",() =>{
-      // setCarList((prev) =>([...prev, socket.message]))
-    })
-    newSocket.on("test",(data) =>{
-      console.log(data)
-    })
-  },[newSocket])
-  const handleOnSubmit =  () => {
-    console.log(formData)
-    newSocket.emit("join_room",formData.roomid)
+    const [room, setroom] = useState<string>("");
+    const [currentRoom, setCurrentRoom]  = useState<string|null>(null);
+    const [messages, setMessages] = useState<Array<Sent_Message>>([])
+    const [message,setMessage] = useState<string>("")
+
+    useEffect(()=>{
+        socket.on("message",(data) =>{
+            setMessages((prev) => ([...prev,data]))
+        })
+        return () =>{
+            socket.off("message")  
+        }
+    },[])
+
+  const enterHandler =() =>{
+    socket.emit("join_room",room);
+    setCurrentRoom(room);
+    setMessages([])
   }
 
-  const handleOnChange = (e)=>{
-    e.preventDefault();
-    setFormData((prev) =>  ({...prev, [e.target.name]: e.target.value}))
-    
+  const sendMessageHandler = () =>{
+    if((message?.length > 0) && currentRoom){
+        socket.emit("send_message",{room,message})
+    }
+    setMessage("");
   }
+
+  const leaveRoom = () =>{
+    socket.emit("leave_room",currentRoom);
+    setCurrentRoom(null);
+    setMessages([])
+  }
+  if(!currentRoom){
+    return (
+        <div><h2>Join a Chat Room</h2>
+            <label htmlFor='room_id'>Room Name</label>
+            <input id='room_id' type='text' placeholder='Enter Room Name' value={room} onChange={(e)=>setroom(e.target.value)}/>
+            <button onClick={enterHandler}>Join Room</button>
+        </div>
+      )
+  }
+
   return (
-    <div><h2>Express is working fine</h2>
-    <form>
-    <label htmlFor='Room_name' >Room id</label>
-        <input type="text" id="Room_name" name="roomid" value={formData.roomid} onChange={handleOnChange}/>
-
-        <label htmlFor='Name'>Your Name</label>
-        <input type='text' id='Name' name='yourName' value={formData.yourName} onChange={handleOnChange}/>
-
-        <button type='button' onClick={handleOnSubmit}>submit</button>
-    </form>
-
-        
+    <div>
+        <h2>Chat Room: {currentRoom}</h2>
+        <ul>
+            {messages.map((message, index) => (
+                <li key={index}>{message.sender}: {message.message}</li>
+            ))}
+        </ul>
+        <label htmlFor='message'>Message</label>
+        <input id='message' type='text'  value={message} onChange={(e)=>setMessage(e.target.value)}/>
+        <button onClick={sendMessageHandler}>Send</button>
+        <button onClick={leaveRoom}>Leave Room</button>
     </div>
   )
 }
