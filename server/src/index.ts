@@ -1,14 +1,16 @@
 import  express from "express"
 import { createServer } from "http"
-import socketio from "socket.io" 
+import {setSocket} from  './socket'
+
 
 const app = express(); //make an express app
+// app.use(express.static('public'))
+
+const server = createServer(app)
+setSocket(server)
 // making server file public
-app.use(express.static('public'))
-const expressServer = app.listen(4000)
-
-const io = (socketio as any)(expressServer,{
-
-}); //make a socket.io server
+server.listen(4000,()=>{
+    console.log("runnign on 4000")
+})
 
 
