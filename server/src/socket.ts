@@ -2,6 +2,7 @@ import socketio from "socket.io"
 interface SentMessage{
     message: string;
     room: string;
+    name:String
 }
 export const setSocket = (server:any) =>{
     const io = new socketio.Server(server,{
@@ -13,15 +14,18 @@ export const setSocket = (server:any) =>{
 
         console.log("Client connected",socket.id)
 
-        socket.on("join_room",(room:string)=>{
+        socket.on("join_room",({room,name}:any)=>{
             socket.join(room)
-            console.log("joined room",socket.id)
-            io.to(room).emit("message",`A new user is just joined ${socket.id} in room ${room}`)
+            console.log("joined room",socket.id,"in room",room,"withName",name)
+            io.to(room).emit("message",{message:`New User Just joined the  room ${room}`,socketId:socket.id,name})
+            socket.emit("joined_room",socket.id);
         })
-        socket.on("send_message",({message,room}:SentMessage) =>{
+
+        socket.on("send_message",({message,room,name}:SentMessage) =>{
             console.log(`${socket.id} just sent a message in a room ${room}`)
-            io.to(room).emit("message",{message,sender:socket.id})
+            io.to(room).emit("message",{message,name,socketId:socket.id})
         })
+
         socket.on("leave_room",(room:string)=>{
             socket.leave(room)
         })
