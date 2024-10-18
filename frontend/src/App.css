@@ -5,6 +5,11 @@
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+  transition: transform 0.2s; /* Smooth scaling on hover */
+}
+
+.App-logo:hover {
+  transform: scale(1.1); /* Slightly scale the logo on hover */
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -22,10 +27,17 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  padding: 20px; /* Added padding for better spacing */
 }
 
 .App-link {
   color: #61dafb;
+  text-decoration: none; /* Remove underline from links */
+  transition: color 0.2s; /* Smooth color transition */
+}
+
+.App-link:hover {
+  color: #21a1f1; /* Darker color on hover */
 }
 
 @keyframes App-logo-spin {

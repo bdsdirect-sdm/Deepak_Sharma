@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 body {
-  margin: 0;
+  @apply m-0; /* Remove default margin */
+  @apply font-sans; /* Use Tailwind's font-sans */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -12,6 +13,9 @@ body {
 }
 
 code {
+  @apply font-mono; /* Use Tailwind's font-mono */
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Custom styles can go here */
