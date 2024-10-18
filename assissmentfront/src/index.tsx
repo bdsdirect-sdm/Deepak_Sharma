@@ -22,7 +22,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <Router>
-    <React.StrictMode>
+    {/* <React.StrictMode> */}
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
           <App />
@@ -30,7 +30,7 @@ root.render(
         </QueryClientProvider>
       </Provider>
 
-    </React.StrictMode>
+    {/* </React.StrictMode> */}
   </Router>
 
 );

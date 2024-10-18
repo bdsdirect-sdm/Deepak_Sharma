@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import InputFeild from '../components/common/InputFeild';
 import { useQuery } from '@tanstack/react-query';
-import { createValidationSchema } from '../utilities/validators';
+import { createValidationSchema } from '../validators';
 import { useResisterContext } from '../services/operations/userAPI';
 
 

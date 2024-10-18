@@ -15,6 +15,8 @@ const App : React.FC = () => {
   const {user_type} = useSelector((state:any) => state.user)
   console.log(user_type,"userType from redux")
 
+  const {user} = useSelector((state:any) =>state.user)
+
   // const user_type : string | null = localStorage.getItem("user_type")
   return (
     <div className="App">
@@ -34,7 +36,9 @@ const App : React.FC = () => {
         {
           user_type === "Agency"  && (<Route path = "/dashboard" element={<AgencyDeshboard/>}/>)
         }
-        <Route path='/chatbox/:roomid' element = {<ChatBox/>}/>
+        {
+          user && <Route path='/chatbox/:roomid' element = {<ChatBox/>}/>
+        }
         <Route path='*' element={<Navigate to={"/login"}/>}/>
         
       </Routes>

@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { Form, Formik, Field, ErrorMessage } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import { createLoginSchema } from '../utilities/validators';
+import { createLoginSchema } from '../validators';
 import { useDispatch } from 'react-redux';
 import { useLoginContext } from '../services/operations/userAPI';
 import { useState } from 'react';

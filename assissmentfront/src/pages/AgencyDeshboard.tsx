@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { useLogout } from '../services/operations/userAPI'
+import { useMutation } from '@tanstack/react-query'
 
 const AgencyDeshboard = () => {
     const [status, setStatus] = useState("")
@@ -13,7 +14,7 @@ const AgencyDeshboard = () => {
     const  navigate = useNavigate()
     const logout = useLogout(dispatch,navigate)
     // console.log(token,"token comming from redux")
-    const {data, isLoading} = useQuery({
+    const {data, isLoading, refetch} = useQuery({
         queryKey: ['agency'],
         queryFn: async () => {
             const response = await axios.get(`http://localhost:4400/api/v1/getAllSeekers`,{
@@ -22,6 +23,13 @@ const AgencyDeshboard = () => {
                 }
             })
             return response.data;
+        }
+    })
+
+    const {mutate:statusMutate} = useMutation({
+        mutationFn: async (data:any) => {
+            const response = await axios.put(`http://localhost:4400/api/v1/setAgaencyStatus/${data.id}`,data);
+            refetch()
         }
     })
 
@@ -52,13 +60,16 @@ const AgencyDeshboard = () => {
                             <h2 className="text-lg font-semibold">{seeker.firstName + " "+ seeker.lastName}</h2>
                             <p className="text-gray-600">{seeker.email}</p>
                             <p className="text-gray-600">{seeker.phoneNo}</p>
-                            <p>Application Staus: {seeker.satus}</p>
-                            <div className='flex flex-row'>
-                            <a href={`http://localhost:4400/${seeker.resume}`} download className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded w-fit'>Download CV</a>
+                            <p>Application Status: <span className=' font-semibold'>{seeker.status}</span></p>
+                            <div className='flex flex-col gap-2'>
+                            <a href={`http://localhost:4400/${seeker.resume}`} download className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded  '>Download CV</a>
 
                             {
                                 seeker.status === "approved" ? (<button className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded w-fit' onClick={()=>joinChatHandler(seeker.id)}>Join Chat</button>) : 
-                                seeker.status === "pending" ? (<button onClick={() =>setStatus("approved")}>Confirm</button>) : (null)
+                                seeker.status === "pending" ? (<div className=' flex flex-row gap-2'>
+                                    <button onClick={() =>statusMutate({status:"approved",id:seeker.id})} className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded w-fit mx-2'>Confirm</button>
+                                    <button onClick={() =>statusMutate({status:"declined",id:seeker.id})} className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded w-fit mx-2'>Decline</button>
+                                </div>) : (null)
                             }
                             </div>
                        </div>
@@ -69,7 +80,7 @@ const AgencyDeshboard = () => {
                     <button type='button'
                         onClick={() =>logout()}
                             
-                        className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mt-6 w-fit mx-auto'>
+                        className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mt-6 w-fit mx-auto h-fit  '>
 		                Logout
 		        </button>
             </div>

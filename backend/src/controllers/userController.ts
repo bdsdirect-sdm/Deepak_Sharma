@@ -6,6 +6,7 @@ import { sendMail } from "../config/mailConnect"
 import bcrypt   from "bcrypt"
 import { passwordToHassed } from "../utilities/hassedPassword"
 import { welcomeEmail } from "../emailTemplates/welcomeEmail"
+import { stat } from "node:fs"
 
 interface payloadInterface{
     firstName:string,
@@ -68,7 +69,7 @@ export const userSignup = async(req:any, res:Response) => {
         }
 
 
-        // await sendMail(email,"Welcome Message",welcomeEmail(user_type,password,firstName+" "+lastName))
+        await sendMail(email,"Welcome Message",welcomeEmail(user_type,password,firstName+" "+lastName))
 
 
         res.status(200).json({
@@ -270,6 +271,27 @@ export const getAllSeekers = async (req:any, res:Response) => {
         res.status(200).json({
             success:true,
             sekeers:sekeers
+        })
+    } catch(error){
+        res.status(500).json({
+            success:false,
+            message:error
+        })
+    }
+}
+
+export const setAgaencyStatus = async(req:any, res:Response) =>{
+    try{
+        const {id} = req.params;
+        console.log("params iddddd",id)
+        const {status} = req.body;
+
+        const user:any =  await UserDetail.findByPk(id);
+        user.status = status;
+        await user?.save();
+        res.status(200).json({
+            success:true,
+            message:"User Status is Updated"
         })
     } catch(error){
         res.status(500).json({

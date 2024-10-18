@@ -3,18 +3,23 @@ import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/dbconnect";
 
 class Messages extends Model {
+    public id!: number;
     public roomid! : string;
     public senderid! : string;
     public message! : string;
-    public receverid!:string;
-    public createAt!:string;
+    public createdAt!:string;
 }
 
 Messages.init({
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey:true,
+        autoIncrement:true,
+        unique:true
+    },
     roomid:{
         type:DataTypes.STRING(255),
         allowNull:false,
-        primaryKey:true
     },
     senderid:{
         type:DataTypes.STRING(50),
@@ -24,13 +29,9 @@ Messages.init({
         type:DataTypes.STRING(255),
         allowNull:false
     },
-    receverid:{
-        type:DataTypes.STRING(50),
-        allowNull:false
-    },
-    createAt:{
+    createdAt:{
         type:DataTypes.STRING,
-        defaultValue: Date.now().toString()
+        allowNull:false,
     }
 },{
     sequelize,
@@ -38,3 +39,4 @@ Messages.init({
 })
 
 export default  Messages;
+
