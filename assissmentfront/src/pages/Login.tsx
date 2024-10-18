@@ -61,9 +61,9 @@ const Login = () => {
               {isPending && <p className="text-blue-600 mb-3">Loading...</p>}
               {isError && <p className="text-red-600 mb-3">Error: {error?.message}</p>}
 
-             <div>
-                <label htmlFor='stay_login'>Stay Sign in</label>
-                <input name="stay_login" type='checkbox' onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
+             <div className='flex flex-row justify-center align-middle gap-3 my-2'>
+                <label htmlFor='stay_login' className=' text-sm font-medium text-gray-700'>Stay Sign in</label>
+                <input id='stay_login' name="stay_login" type='checkbox' onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
                   const checked = e.target.checked;
                   if(checked){
                     setStay(true)
@@ -80,6 +80,13 @@ const Login = () => {
                 className={`w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {isSubmitting ? 'Logging in...' : 'Login'}
+              </button>
+              <button
+                type="button"
+                className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 my-2"
+                onClick={() =>navigate("/")}
+              >
+                Singup
               </button>
             </Form>
           )}

@@ -1,7 +1,6 @@
 import  {Request, Response} from "express"
 import jwt from "jsonwebtoken"
 import UserDetail from "../models/userDetail"
-import Hobbies from "../models/hobbiesModel"
 import {generateRandomCode} from "../utilities/generateRandomCode"
 import { sendMail } from "../config/mailConnect"
 import bcrypt   from "bcrypt"
@@ -19,7 +18,9 @@ interface payloadInterface{
     profile_image:string,
     agency?:string,
     resume?:string,
-    isActive:boolean
+    isActive:boolean,
+    status?:string,
+    hobbies:string
 }
 
 
@@ -28,17 +29,15 @@ export const userSignup = async(req:any, res:Response) => {
 
         const {firstName, lastName,email,phoneNo, gender, user_type,hobbies,isActive = true} = req.body;  
 
-        const hobbiArray = (hobbies).split(",");
-
-        
         const password = generateRandomCode(8);
+        console.log(password)
 
         const  hashedPassword = await passwordToHassed(password);
 
         const {profile_image}  = req.files;
 
 
-        let payload : payloadInterface  = {firstName,lastName,email,phoneNo,gender,user_type,password : hashedPassword,isActive ,profile_image:profile_image?.[0].path};
+        let payload : payloadInterface  = {firstName,lastName,email,phoneNo,gender,user_type,password : hashedPassword,isActive ,profile_image:profile_image?.[0].path,hobbies};
 
         if(user_type === "Job_Seeker"){
             const {agency} =  req.body;
@@ -46,6 +45,7 @@ export const userSignup = async(req:any, res:Response) => {
             const {resume } = req?.files;
             const resumePath = resume?.[0].path;
             payload.resume = resumePath 
+            payload.status = "pending"
         }
 
         const existUser = await UserDetail.findOne({where:{email:email}});
@@ -60,13 +60,7 @@ export const userSignup = async(req:any, res:Response) => {
         
         const  userDetail : any = await UserDetail.create(payload as any);
 
-        const insertAllHobbies:any = hobbiArray?.map((hobbi : string) =>Hobbies.create({
-            hobbi,
-            userId:userDetail?.id
-        }))
-        const hobbiDetail:any =await Promise.all(insertAllHobbies);
-
-        if(!userDetail  ||  !hobbiDetail){
+        if(!userDetail){
             res.status(500).json({
                 message:"Failed to create user",
                 success:false
@@ -74,14 +68,13 @@ export const userSignup = async(req:any, res:Response) => {
         }
 
 
-        await sendMail(email,"Welcome Message",welcomeEmail(user_type,password,firstName+" "+lastName))
+        // await sendMail(email,"Welcome Message",welcomeEmail(user_type,password,firstName+" "+lastName))
 
 
         res.status(200).json({
             success:true,
             message:"Successfully created user", 
             userDetail,
-            hobbiDetail
         })
 
     } catch(error){
@@ -256,7 +249,7 @@ export const getMyAgency = async (req:any, res:Response) => {
         })
         res.status(200).json({
             success:true,
-            agency:agency
+            agency
         })
     } catch(error){
         res.status(500).json({

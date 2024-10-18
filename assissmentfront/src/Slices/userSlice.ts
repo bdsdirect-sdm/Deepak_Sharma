@@ -5,6 +5,7 @@ const intilaState = {
     stayLogin : false,
     user_type:localStorage.getItem("user_type") ? JSON.parse(localStorage.getItem("user_type") as any): (sessionStorage.getItem("user_type") ?  JSON.parse(sessionStorage.getItem("user_type") as any) : null),
     token:localStorage.getItem("token") ? JSON.parse(localStorage.getItem("token") as any) : (sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token") as string):null),
+    user:localStorage.getItem("user") ? JSON.parse(localStorage.getItem("us") as string) : (sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user") as string):null)
 }
 
 const userSlice = createSlice({
@@ -25,9 +26,17 @@ const userSlice = createSlice({
                 localStorage.setItem("token", JSON.stringify(value.payload))
             }
         },
+        setUser:(state,value) =>{
+            state.user = value.payload
+            sessionStorage.setItem("user",JSON.stringify(value.payload))
+            if(state.stayLogin){
+                localStorage.setItem("user", JSON.stringify(value.payload))
+            }
+        },
         logout:(state) => {
             state.token = null;
             state.user_type = null;
+            state.user = null;
             state.stayLogin = false
             localStorage.clear(); 
             sessionStorage.clear() 
@@ -38,6 +47,6 @@ const userSlice = createSlice({
     }
 })
 
-export const {setToken,setUserType,logout,setStayLogin} = userSlice.actions;
+export const {setToken,setUserType,logout,setStayLogin,setUser} = userSlice.actions;
 
 export default userSlice.reducer;
