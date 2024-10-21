@@ -15,7 +15,7 @@ import { UseDispatch } from 'react-redux'
         const {data, isLoading, isError,error} = useQuery({
             queryKey: ['seekerDashBoard'],
             queryFn: async () => {
-                const response = await axios.get(`http://localhost:4400/api/v1/getMyAgency`,{
+                const response = await axios.get(`http://172.24.0.207:4400/api/v1/getMyAgency`,{
                     headers:{
                         'Authorization': `Bearer ${token}`
                     }
@@ -67,7 +67,7 @@ import { UseDispatch } from 'react-redux'
 		            {/* Profile Image Section */}
 		            {
 		                data.agency.profile_image &&
-		                (<img src={`http://localhost:4400/${data.agency.profile_image}`} alt='Profile'  className='rounded-full object-cover w-[30%] mx-auto'/>)
+		                (<img src={`http://172.24.0.207:4400/${data.agency.profile_image}`} alt='Profile'  className='rounded-full object-cover w-[30%] mx-auto'/>)
 		            }
                     {
                                 user.status === "approved" ? (<button className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded w-fit' onClick={()=>joinChatHandler()}>Join Chat</button>) : 

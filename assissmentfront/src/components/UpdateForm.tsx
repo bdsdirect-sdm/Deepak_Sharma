@@ -77,7 +77,7 @@ const UpdateForm: React.FC<any> = () => {
 
     async  function getProfileData(){
         try{
-            const response:any  = await axios.get(`http://localhost:3001/user/profile/${id}`)
+            const response:any  = await axios.get(`http://172.24.0.207:3001/user/profile/${id}`)
 
             console.log("data full image",response?.data?.userFullDetails
             )
@@ -131,7 +131,7 @@ const UpdateForm: React.FC<any> = () => {
                   console.log(key,value)
                 }
   
-                const response : any  = await axios.put(`http://localhost:3001/user/updateProfile/${id}`,formData,{
+                const response : any  = await axios.put(`http://172.24.0.207:3001/user/updateProfile/${id}`,formData,{
                   headers:{
                     'Content-Type': 'multipart/form-data'
                   }

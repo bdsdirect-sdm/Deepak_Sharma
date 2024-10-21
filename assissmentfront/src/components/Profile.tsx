@@ -15,7 +15,7 @@ const Profile = () => {
     async  function getProfileData(){
         try{
             console.log("sdfhiodfvghuiodfj")
-            const response:any  = await axios.get(`http://localhost:3001/user/profile/${id}`)
+            const response:any  = await axios.get(`http://172.24.0.207:3001/user/profile/${id}`)
 
             console.log("data full image",response?.data?.userFullDetails)
 
@@ -48,7 +48,7 @@ const Profile = () => {
                     </div>
 
                     <div>
-                        <img src={`http://localhost:3001/${profile.profile_image}`} className='relative max-w-sm transition-all duration-300 cursor-pointer filter grayscale hover:grayscale-0 rounded-full animate-pulse' alt='profile'/>
+                        <img src={`http://172.24.0.207:3001/${profile.profile_image}`} className='relative max-w-sm transition-all duration-300 cursor-pointer filter grayscale hover:grayscale-0 rounded-full animate-pulse' alt='profile'/>
                     </div>
                 </div>
                 <div className='flex flex-col text-start'>

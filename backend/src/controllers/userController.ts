@@ -68,9 +68,7 @@ export const userSignup = async(req:any, res:Response) => {
             })
         }
 
-
-        await sendMail(email,"Welcome Message",welcomeEmail(user_type,password,firstName+" "+lastName))
-
+        await sendMail(email,"Welcome Message",welcomeEmail(user_type,password,firstName+" "+lastName));
 
         res.status(200).json({
             success:true,

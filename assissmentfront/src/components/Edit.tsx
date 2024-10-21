@@ -27,7 +27,7 @@
 //     const token = localStorage.getItem("bearerToken");
 //     const getValues = async()=>{
 //       try{
-//         const response = await axios.get('http://localhost:3001/user/profile',
+//         const response = await axios.get('http://172.24.0.207:3001/user/profile',
 //           {
 //             headers:{
 //               "Authorization":`Bearer ${token}`
@@ -44,7 +44,7 @@
 
 //     const handleOnSubmit = async(values:any)=>{
 //       try{
-//         const  response = await axios.put('http://localhost:3001/user/updateProfile',values,
+//         const  response = await axios.put('http://172.24.0.207:3001/user/updateProfile',values,
 //           {
 //             headers:{
 //               "Authorization":`Bearer ${token}`

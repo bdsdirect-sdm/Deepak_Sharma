@@ -26,7 +26,7 @@ const ChatBox = () => {
     const {data} = useQuery({
       queryKey: ["messages", roomid],
       queryFn: async () => {
-        const response = await axios.get(`http://localhost:4400/api/v1/getMessages/${roomid}`)
+        const response = await axios.get(`http://172.24.0.207:4400/api/v1/getMessages/${roomid}`)
 
         // console.log(response.data)
         const messagesData = Array.isArray(response.data.messages) ? response.data.messages : [];

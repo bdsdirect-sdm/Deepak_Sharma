@@ -27,13 +27,13 @@ const initialFromData = {
 const Register: React.FC = () => {
   const [agencyData, setAgency] = useState([]);
 
-  console.log("REACT_APP_BASE_URL", process.env.REACT_APP_BASE_URL)
+  console.log("REACT_APP_BASE_URL", process.env.REACT_APP_BASE_URL); // for testing
 
   const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
-      const response = await axios.get( "http://localhost:4400/api/v1/getAllAgency");
+      const response = await axios.get( "http://172.24.0.207:4400/api/v1/getAllAgency");
       setAgency(response.data.data);
       return response;
     } catch (error) {
@@ -58,9 +58,9 @@ const Register: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-xl transform skew-y-3 sm:skew-y-0 sm:-rotate-6 rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-gradient-to-r from-slate-100 to-slate-400 shadow-lg sm:rounded-3xl sm:p-20">
           <div className="max-w-md mx-auto">
-            <div className="text-center text-3xl font-bold text-gray-900 mb-5">Register Form</div>
+            <div className="text-center text-3xl font-bold text-gray-900 mb-5">Registration Form</div>
 
-            <Formik
+            <Formik 
               initialValues={initialFromData}
               validationSchema={createValidationSchema}
               onSubmit={async (values) => {
