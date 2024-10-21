@@ -52,7 +52,7 @@ const AgencyDeshboard = () => {
                     <div key={i} className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center">
                     <div className='flex flex-row gap-5'>
                         <img 
-                            src={`http://172.24.0.207:4400/${seeker.profile_image}`} 
+                            src={process.env.REACT_APP_BASE_URL+`/${seeker.profile_image}`} 
                             alt={`${seeker.name}'s profile`} 
                             className="w-24 h-24 rounded-full mb-4 object-cover"
                         />

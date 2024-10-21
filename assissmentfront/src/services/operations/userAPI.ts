@@ -14,7 +14,7 @@ export const useLoginContext = (dispatch:any,navigate:any,stay:any) =>{
     return(
          useMutation({
             mutationFn : async(data) =>{
-                return await axios.post("http://172.24.0.207:4400/api/v1/login",data)
+                return await axios.post(process.env.REACT_APP_BASE_URL+"/login",data)
             },
             onSuccess : (data) =>{
                 dispatch(setUser(data.data.user))
@@ -31,11 +31,12 @@ export const useResisterContext = (navigate:any) => {
     return (
         useMutation({
             mutationFn: async (data) => {
-                return await axios.post(  "http://172.24.0.207:4400/api/v1/signup", data)
+                return await axios.post(  process.env.REACT_APP_BASE_URL+"/signup", data)
             },
             onSuccess:(data) =>{
                 localStorage.clear();
                 navigate("/login")
+                toast.success("Successfully Signed Up")
             }
         })
     )
