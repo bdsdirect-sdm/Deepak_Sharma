@@ -15,7 +15,7 @@ import { UseDispatch } from 'react-redux'
         const {data, isLoading, isError,error} = useQuery({
             queryKey: ['seekerDashBoard'],
             queryFn: async () => {
-                const response = await axios.get(`http://172.24.0.207:4400/api/v1/getMyAgency`,{
+                const response = await axios.get(process.env.REACT_APP_BASE_URL+`1/getMyAgency`,{
                     headers:{
                         'Authorization': `Bearer ${token}`
                     }

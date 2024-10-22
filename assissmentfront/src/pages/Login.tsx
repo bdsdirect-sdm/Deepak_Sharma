@@ -18,7 +18,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md text-start">
         <h2 className="text-center text-3xl font-bold text-gray-900 mb-6">Login</h2>
 
         <Formik
@@ -62,7 +62,7 @@ const Login = () => {
               {isError && <p className="text-red-600 mb-3">Error: {error?.message}</p>}
 
              <div className='flex flex-row justify-center align-middle gap-3 my-2'>
-                <label htmlFor='stay_login' className=' text-sm font-medium text-gray-700'>Stay Sign in</label>
+                <label htmlFor='stay_login' className=' text-sm font-medium text-gray-700'>Stay Signed In</label>
                 <input id='stay_login' name="stay_login" type='checkbox' onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
                   const checked = e.target.checked;
                   if(checked){

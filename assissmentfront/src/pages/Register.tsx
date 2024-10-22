@@ -27,13 +27,11 @@ const initialFromData = {
 const Register: React.FC = () => {
   const [agencyData, setAgency] = useState([]);
 
-  console.log("REACT_APP_BASE_URL", process.env.REACT_APP_BASE_URL); // for testing
-
   const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
-      const response = await axios.get( "http://172.24.0.207:4400/api/v1/getAllAgency");
+      const response = await axios.get( process.env.REACT_APP_BASE_URL + "/getAllAgency");
       setAgency(response.data.data);
       return response;
     } catch (error) {
@@ -53,150 +51,148 @@ const Register: React.FC = () => {
   }
 
   return (
-    <div className=" bg-gradient-to-r from-slate-100 to-slate-400 bg-gray-100 min-h-screen py-6 flex flex-col justify-center sm:py-12">
-      <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-xl transform skew-y-3 sm:skew-y-0 sm:-rotate-6 rounded-3xl"></div>
-        <div className="relative px-4 py-10 bg-gradient-to-r from-slate-100 to-slate-400 shadow-lg sm:rounded-3xl sm:p-20">
-          <div className="max-w-md mx-auto">
-            <div className="text-center text-3xl font-bold text-gray-900 mb-5">Registration Form</div>
+    <div className="bg-gradient-to-r from-slate-100 to-slate-400 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div className="max-w-7xl w-full space-y-8">
+    <div className="relative">
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-lg rounded-lg transform rotate-2"></div>
+      <div className="relative bg-white p-10 rounded-lg shadow-md z-10">
+        <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-6">Registration Form</h2>
 
-            <Formik 
-              initialValues={initialFromData}
-              validationSchema={createValidationSchema}
-              onSubmit={async (values) => {
-                try {
-                  const formData: any = new FormData();
-                  Object.keys(values).forEach((key) => formData.append(key, (values as any)[key]));
+        <Formik
+          initialValues={initialFromData}
+          validationSchema={createValidationSchema}
+          onSubmit={async (values) => {
+            try {
+              const formData : any = new FormData();
+              Object.keys(values).forEach((key) => formData.append(key, (values as any)[key]));
 
-                  // for (let [key, value] of formData) {
-                  //   console.log(key, value);
-                  // }
-
-
-                   await mutate(formData);
-                } catch (error) {
-                  toast.error("Unable to upload data");
-                }
-              }}
-            >
-              {({ values, isSubmitting, isValid, setFieldValue, setValues }) => (
-                <Form className="space-y-6">
+              await mutate(formData);
+            } catch (error:any) {
+              toast.error(error.message);
+            }
+          }}
+        >
+          {({ values, setFieldValue, setValues,isValid }) => (
+            <Form className="space-y-6">
+              {/* Flex container for horizontal layout */}
+              <div className="grid grid-cols-2 gap-x-8">
+                {/* Column 1 */}
+                <div className="space-y-4">
                   <InputFeild fieldName="firstName" label="First Name" placeHolder="Enter your First Name" />
-                  {values.user_type === 'Job_Seeker' && <InputFeild fieldName="lastName" label="Last Name" placeHolder="Enter your Last Name" />}
+                  {values.user_type === 'Job_Seeker' && (
+                    <InputFeild fieldName="lastName" label="Last Name" placeHolder="Enter your Last Name" />
+                  )}
 
                   <InputFeild fieldName="email" label="Email" placeHolder="Enter your Email" />
-                  <InputFeild fieldName="phoneNo" label="Phone Number" placeHolder="Enter Your Phone No" />
+                  <InputFeild fieldName="phoneNo" label="Phone Number" placeHolder="Enter your Phone No" />
 
+                  {/* Gender Radio Group */}
                   <div className="flex items-center space-x-4">
                     <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
-                    <div className="flex items-center">
-                      <label htmlFor="male" className="mr-2">Male</label>
-                      <Field type="radio" id="male" name="gender" value="male" className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" />
-                    </div>
-                    <div className="flex items-center">
-                      <label htmlFor="female" className="mr-2">Female</label>
-                      <Field type="radio" id="female" name="gender" value="female" className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" />
-                    </div>
-                    <div className="flex items-center">
-                      <label htmlFor="other" className="mr-2">Other</label>
-                      <Field type="radio" id="other" name="gender" value="other" className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" />
+                    <div className="flex items-center space-x-4">
+                      {['male', 'female', 'other'].map((gender) => (
+                        <label key={gender} className="flex items-center">
+                          <Field type="radio" id={gender} name="gender" value={gender} className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" />
+                          <span className="ml-2 capitalize">{gender}</span>
+                        </label>
+                      ))}
                     </div>
                   </div>
 
-                  <div id="checkbox-group" className="block text-sm font-medium text-gray-700">Hobbies</div>
-                  <div role="group" aria-labelledby="checkbox-group" className="space-y-2">
-                    {['Singing', 'Traviling', 'Reading', 'Playing'].map((hobby) => (
-                      <div key={hobby} className="flex items-center">
-                        <Field type="checkbox" id={hobby} name="hobbies" value={hobby} className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            const checked = e.target.checked;
-                            const currentHobbies = values.hobbies;
-                            if (checked) {
-                              setFieldValue("hobbies", [...currentHobbies, hobby])
-                            }
-                            else {
-                              setFieldValue("hobbies", (currentHobbies.filter((hobbies: string) => hobbies !== hobby)))
-                            }
+                  
+                </div>
 
-                          }}
-                        />
-                        <label htmlFor={hobby} className="ml-2 text-sm text-gray-700">{hobby}</label>
-                      </div>
-                    ))}
-                    <ErrorMessage  name="hobbies" component="span" className="ml-2 text-sm text-red-600" />
+                {/* Column 2 */}
+                <div className="space-y-4 text-start">
+
+                  {/* Hobbies Checkboxes */}
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 text-start mt-2">Hobbies</label>
+                    <div role="group" className="flex flex-wrap gap-2">
+                      {['Singing', 'Travelling', 'Reading', 'Playing'].map((hobby) => (
+                        <div key={hobby} className="flex items-center">
+                          <Field type="checkbox" id={hobby} name="hobbies" value={hobby} className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                              const checked = e.target.checked;
+                              const currentHobbies = values.hobbies;
+                              setFieldValue("hobbies", checked ? [...currentHobbies, hobby] : currentHobbies.filter(h => h !== hobby));
+                            }}
+                          />
+                          <label htmlFor={hobby} className="ml-2 text-sm">{hobby}</label>
+                        </div>
+                      ))}
+                    </div>
+                    <ErrorMessage name="hobbies" component="div" className="text-red-600 text-sm mt-1" />
                   </div>
 
+                  {/* User Type */}
                   <div>
                     <label htmlFor="user_type" className="block text-sm font-medium text-gray-700">User Type</label>
-                    <Field as="select" name="user_type" className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <Field as="select" name="user_type" className="mt-1 block w-full bg-white border border-gray-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                       <option value="Job_Seeker">Job Seeker</option>
                       <option value="Agency">Agency</option>
                     </Field>
                   </div>
 
-                  <div className="flex flex-col space-y-3">
+                  {/* Profile Image */}
+                  <div>
                     <label htmlFor="profile_image" className="block text-sm font-medium text-gray-700">Profile Image</label>
                     <input
                       id="profile_image"
                       name="profile_image"
                       type="file"
-                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300"
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                        const file = event.target.files?.[0] || null;
-                        setFieldValue('profile_image', file);
-                      }}
+                      className="mt-1 block w-full text-sm text-gray-500 file:bg-blue-50 file:text-blue-700 file:font-semibold file:border-0 file:py-2 file:px-4 hover:file:bg-blue-100"
+                      onChange={(e) => setFieldValue('profile_image', e.target.files?.[0] || null)}
                     />
                     <ErrorMessage name="profile_image" component="div" className="text-red-500 text-sm" />
                   </div>
 
                   {values.user_type === 'Job_Seeker' && (
                     <>
-                      <div className="flex flex-col space-y-3">
+                      <div>
                         <label htmlFor="resume" className="block text-sm font-medium text-gray-700">Resume</label>
                         <input
                           id="resume"
                           name="resume"
                           type="file"
-                          placeholder='jpeg and png  only'
-                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300"
-                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                            const file = event.target.files?.[0] || null;
-                            setFieldValue('resume', file);
-                          }}
+                          className="mt-1 block w-full text-sm text-gray-500 file:bg-blue-50 file:text-blue-700 file:font-semibold file:border-0 file:py-2 file:px-4 hover:file:bg-blue-100"
+                          onChange={(e) => setFieldValue('resume', e.target.files?.[0] || null)}
                         />
                         <ErrorMessage name="resume" component="div" className="text-red-500 text-sm" />
                       </div>
 
                       <div>
                         <label htmlFor="agency" className="block text-sm font-medium text-gray-700">Agency</label>
-                        <Field as="select" name="agency" className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <Field as="select" name="agency" className="mt-1 block w-full bg-white border border-gray-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                           <option value="">Select Agency</option>
-                          {agencyData?.map((agency: any) => (
+                          {agencyData?.map((agency:any) => (
                             <option key={agency.firstName} value={agency.firstName}>{agency.firstName}</option>
                           ))}
                         </Field>
-                        <ErrorMessage  name="agency" component="div" className="text-red-500 text-sm" />
-
+                        <ErrorMessage name="agency" component="div" className="text-red-500 text-sm" />
                       </div>
                     </>
                   )}
+                </div>
+              </div>
 
-                  <div className="flex space-x-4">
-                    <button type="submit"  className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-500 transition-colors">Signup</button>
-                    <button type="button" className="w-full bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-500 transition-colors"
-                      onClick={() => {setValues(initialFromData)}}>Reset</button>
-                  </div>
-                  <div>
-                  <button type="button" className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-500 transition-colors"
-                      onClick={() => {navigate("/login")}}>Login</button>
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          </div>
-        </div>
+              {/* Submit and Reset Buttons */}
+              <div className="flex space-x-4 justify-center">
+                <button type="submit" className="w-1/3 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-500 transition-colors">Signup</button>
+                <button type="button" className="w-1/3 bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-500 transition-colors" onClick={() => { setValues(initialFromData); toast.success("Form Reset")}}>Reset</button>
+              </div>
+              <div>
+                <button type="button" className=" bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-500 transition-colors w-[40%]" onClick={() => navigate("/login")}>Login</button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
+  </div>
+
+</div>
+
   );
 };
 

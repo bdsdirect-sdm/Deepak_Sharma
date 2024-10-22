@@ -7,7 +7,6 @@ import axios from 'axios'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import socket from '../utils/setSocketServer'
-import { createJsxClosingElement } from 'typescript'
 
 interface Message{
   roomid?:string,
@@ -26,7 +25,7 @@ const ChatBox = () => {
     const {data} = useQuery({
       queryKey: ["messages", roomid],
       queryFn: async () => {
-        const response = await axios.get(`http://172.24.0.207:4400/api/v1/getMessages/${roomid}`)
+        const response = await axios.get(process.env.REACT_APP_BASE_URL+`/getMessages/${roomid}`)
 
         // console.log(response.data)
         const messagesData = Array.isArray(response.data.messages) ? response.data.messages : [];
@@ -95,6 +94,7 @@ const ChatBox = () => {
                 )}
             </ul>
             <div className="flex p-4">
+              <label htmlFor='message'>Message</label>
                 <input 
                     id='message' 
                     type='text'  
