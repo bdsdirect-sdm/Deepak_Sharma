@@ -39,8 +39,9 @@ const ChatApp = () => {
     }
     setMessage("");
   }
-  const keyDownEvent = (e)=>{
-    if(e.key == "Enter"){
+  const keyDownEvent = (e:React.KeyboardEvent<HTMLInputElement>)=>{
+    console.log(e.key,"when you enter key");
+    if(e.key == "Enter" && e.shiftKey !== true ){
       sendMessageHandler();
     }
   }
