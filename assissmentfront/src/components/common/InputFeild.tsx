@@ -13,7 +13,7 @@ const InputFeild = ({fieldName, label,placeHolder}:user) => {
             {label}
             </label>
             <Field name={fieldName} id={fieldName} placeholder={placeHolder}  className='border-2 border-gray-400 px-2 py-1 rounded-md w-full' />
-            <ErrorMessage name={fieldName} component="div" className=' -mt-2 text-[12px] font-serif text-red-800'/>
+            <ErrorMessage name={fieldName} component="div" className=' text-[12px] font-serif text-red-800'/>
 
     </div>
   )

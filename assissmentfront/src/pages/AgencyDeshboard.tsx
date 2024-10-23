@@ -17,7 +17,7 @@ const AgencyDeshboard = () => {
     const {data, isLoading, refetch} = useQuery({
         queryKey: ['agency'],
         queryFn: async () => {
-            const response = await axios.get(`http://172.24.0.207:4400/api/v1/getAllSeekers`,{
+            const response = await axios.get(process.env.REACT_APP_BASE_URL+`/getAllSeekers`,{
                 headers: {
                     'Authorization': `Bearer ${token} `
                 }
@@ -28,7 +28,7 @@ const AgencyDeshboard = () => {
 
     const {mutate:statusMutate} = useMutation({
         mutationFn: async (data:any) => {
-            const response = await axios.put(`http://172.24.0.207:4400/api/v1/setAgaencyStatus/${data.id}`,data);
+            const response = await axios.put(process.env.REACT_APP_BASE_URL+`/setAgaencyStatus/${data.id}`,data);
             refetch()
         }
     })
@@ -52,7 +52,7 @@ const AgencyDeshboard = () => {
                     <div key={i} className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center">
                     <div className='flex flex-row gap-5'>
                         <img 
-                            src={process.env.REACT_APP_BASE_URL+`/${seeker.profile_image}`} 
+                            src={process.env.REACT_APP_SERVER_URL+`${seeker.profile_image}`} 
                             alt={`${seeker.name}'s profile`} 
                             className="w-24 h-24 rounded-full mb-4 object-cover"
                         />
@@ -62,7 +62,7 @@ const AgencyDeshboard = () => {
                             <p className="text-gray-600">{seeker.phoneNo}</p>
                             <p>Application Status: <span className=' font-semibold'>{seeker.status}</span></p>
                             <div className='flex flex-col gap-2'>
-                            <a href={`http://172.24.0.207:4400/${seeker.resume}`} download className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded  '>Download CV</a>
+                            <a href={process.env.REACT_APP_SERVER_URL+seeker.resume} download className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded  '>Download CV</a>
 
                             {
                                 seeker.status === "approved" ? (<button className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded w-fit' onClick={()=>joinChatHandler(seeker.id)}>Join Chat</button>) : 
